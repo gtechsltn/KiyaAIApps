@@ -1,4 +1,7 @@
 ﻿using Core_API.Models;
+using Dapper;
+using System.Data;
+using static Dapper.SqlMapper;
 
 namespace Core_API.Services
 {
@@ -8,34 +11,99 @@ namespace Core_API.Services
     public class DepartmentDataService : IDataService<Department, int>
     {
         private readonly UCompanyContext context;
-        public DepartmentDataService(UCompanyContext context)
+        private IConfiguration config;
+        ResponseObject<Department> response;
+        public DepartmentDataService(UCompanyContext context, IConfiguration config)
         {
             this.context = context;
+            this.config = config;
+            response = new ResponseObject<Department>();
         }
 
-        Task<ResponseObject<Department>> IDataService<Department, int>.CreateAsync(Department entity)
+        async Task<ResponseObject<Department>> IDataService<Department, int>.CreateAsync(Department entity)
         {
-            throw new NotImplementedException();
+            var query = config["Queries:CreateDept"].ToString();
+            // Define Parameters
+            var parameters = new DynamicParameters();
+            parameters.Add("@DeptNo", entity.DeptNo, DbType.Int32);
+            parameters.Add("@DeptName", entity.DeptName, DbType.String);
+            parameters.Add("@Location", entity.Location, DbType.String);
+            parameters.Add("@Capacity", entity.Capacity, DbType.Int32);
+
+            using (var conn = context.CreateConnection())
+            {
+                var result = await conn.ExecuteAsync(query, parameters);
+                if (result > 0)
+                {
+                    response.Record = entity;
+                }
+            }
+            return response;
         }
 
-        Task<ResponseObject<Department>> IDataService<Department, int>.DeleteAsync(int id)
+        async Task<ResponseObject<Department>> IDataService<Department, int>.DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var query = config["Queries:DeleteDept"].ToString();
+            // Define Parameters
+            var parameters = new DynamicParameters();
+            parameters.Add("@DeptNo", id, DbType.Int32);
+             
+            using (var conn = context.CreateConnection())
+            {
+                var result = await conn.ExecuteAsync(query, parameters);
+                if (result > 0)
+                {
+                    response.Message = $"Department with DeptNo {id} is deleted successfully";
+                }
+            }
+            return response;
         }
 
-        Task<ResponseObject<Department>> IDataService<Department, int>.GetAsync()
+        async Task<ResponseObject<Department>> IDataService<Department, int>.GetAsync()
         {
-            throw new NotImplementedException();
+            var query = config["Queries:AllDept"].ToString();
+
+            using (var conn = context.CreateConnection())
+            {
+               response.Records =  await conn.QueryAsync<Department>(query);
+            }
+            return response;
+
         }
 
-        Task<ResponseObject<Department>> IDataService<Department, int>.GetAsync(int id)
+        async Task<ResponseObject<Department>> IDataService<Department, int>.GetAsync(int id)
         {
-            throw new NotImplementedException();
+            var query = config["Queries:DeptByNo"].ToString();
+            // Lets define a parameter
+            var parameters = new DynamicParameters();
+            parameters.Add("@DeptNo", id, DbType.Int32);
+
+            using (var conn = context.CreateConnection())
+            {
+                response.Record = await conn.QuerySingleOrDefaultAsync<Department>(query,parameters);
+            }
+            return response;
         }
 
-        Task<ResponseObject<Department>> IDataService<Department, int>.UpdateAsync(int id, Department entity)
+        async Task<ResponseObject<Department>> IDataService<Department, int>.UpdateAsync(int id, Department entity)
         {
-            throw new NotImplementedException();
+            var query = config["Queries:UpdateDept"].ToString();
+            // Define Parameters
+            var parameters = new DynamicParameters();
+            parameters.Add("@DeptNo", entity.DeptNo, DbType.Int32);
+            parameters.Add("@DeptName", entity.DeptName, DbType.String);
+            parameters.Add("@Location", entity.Location, DbType.String);
+            parameters.Add("@Capacity", entity.Capacity, DbType.Int32);
+
+            using (var conn = context.CreateConnection())
+            {
+                var result = await conn.ExecuteAsync(query, parameters);
+                if (result > 0)
+                {
+                    response.Record = entity;
+                }
+            }
+            return response;
         }
     }
 }

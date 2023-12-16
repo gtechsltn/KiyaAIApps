@@ -1,12 +1,18 @@
-﻿namespace Core_API.Models
+﻿/* A Attribute aka Metadata continer namespace that provides attribute classes to varify data for each property*/
+using System.ComponentModel.DataAnnotations;
+namespace Core_API.Models
 {
     public abstract class EntityBase{}
 
     public class Department : EntityBase
     {
+        [Required(ErrorMessage ="DeptNo is required")]
         public int DeptNo { get; set; }
+        [Required(ErrorMessage = "DeptName is required")]
         public string? DeptName { get; set; }
+        [Required(ErrorMessage = "Location is required")]
         public string? Location { get; set; }
+        [Required(ErrorMessage = "Capacity is required")]
         public int Capacity { get; set; }
         public List<Employee> Employees { get; set; } = new List<Employee>();
     }
