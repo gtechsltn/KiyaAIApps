@@ -14,7 +14,7 @@ namespace Core_API.Models
         public string? Location { get; set; }
         [Required(ErrorMessage = "Capacity is required")]
         public int Capacity { get; set; }
-        public List<Employee> Employees { get; set; } = new List<Employee>();
+        public List<Employee>? Employees { get; set; } 
     }
 
     public class Employee : EntityBase
@@ -24,6 +24,6 @@ namespace Core_API.Models
         public string? Designation { get; set; }
         public int Salary { get; set; }
         public int DeptNo { get; set; }
-        public Department Department { get; set; } = new Department();
+        public Department? Department { get; set; }
     }
 }
