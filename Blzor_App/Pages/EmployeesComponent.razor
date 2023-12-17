@@ -1,0 +1,59 @@
+﻿@page "/employees"
+@using Blzor_App.Models
+<h3>List of Employees</h3>
+<div class="container">
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Emp No</th>
+                <th>Emp Name</th>
+                <th>Designation</th>
+                <th>Dept No</th>
+                <th>Salary</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var emp in Employees)
+            {
+                <tr @onclick=@(()=>OnEmployeeSelected(emp))>
+                    <td>@emp.EmpNo</td>
+                    <td>@emp.EmpName</td>
+                    <td>@emp.Designation</td>
+                    <td>@emp.DeptNo</td>
+                    <td>@emp.Salary</td>
+                    <td>
+                     <button class="btn btn-danger" @onclick="@(()=>OnDeleteClick(emp))"> Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+@code {
+
+
+    [Parameter]
+    public List<Employee> Employees { get; set; }// = new Employee();
+
+
+    [Parameter] public EventCallback<Employee> EmployeeSeleted { get; set; }
+    [Parameter] public EventCallback<Employee> DeleteClicked { get; set; }
+
+    protected override void OnInitialized()
+    {
+
+        base.OnInitialized();
+    }
+
+    async Task OnEmployeeSelected(Employee emp)
+    {
+        await EmployeeSeleted.InvokeAsync(emp);
+    }
+
+    async Task OnDeleteClick(Employee emp)
+    {
+        await DeleteClicked.InvokeAsync(emp);
+    }
+}

@@ -1,0 +1,110 @@
+﻿@{
+    /* Route @page, imports NAmespaces @using , Dependencies @inject*/
+}
+
+@page "/empform"
+
+@using Blazo_Wasm_Standalone.Models
+@using System.Text.Json
+<!--UI for Component-->
+<h3>Employee Form</h3>
+<div class="container">
+    <!--The Employee data property is bound to EditForm to
+
+    generate the FormModel for POST make sure that the odel objet is instantiated -->
+
+    <EditForm Model="@Employee">
+        <div class="form-group">
+            <label>Emp No:</label>
+            <InputNumber @bind-Value="Employee.EmpNo" class="form-control"/>
+        </div>
+        <div class="form-group">
+            <label>Emp Name:</label>
+            <InputText @bind-Value="Employee.EmpName" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label>Dept No:</label>
+            <InputSelect @bind-Value="Employee.DeptNo" class="form-control">
+                 <option>Select Department</option> 
+                @foreach (var dept in Departents)
+                {
+                    <option value="@dept.DeptNo">@dept.DeptName</option>
+                }
+            </InputSelect>
+        </div>
+        <div class="form-group">
+            <label>Designation:</label>
+            <InputSelect @bind-Value="Employee.Designation" class="form-control">
+                <option>Select Designation</option>
+                @foreach (var desig in Designations)
+                {
+                    <option value="@desig">@desig</option>
+                }
+            </InputSelect>
+        </div>
+        <div class="form-group">
+            <label>Salary:</label>
+            <InputNumber @bind-Value="Employee.Salary" class="form-control" />
+        </div>
+        <div class="btn-group-lg">
+            <button class="btn btn-warning" @onclick="Clear">Clear</button>
+            <button class="btn btn-success" @onclick="Save">Save</button>
+        </div>
+    </EditForm>
+   @*  @{
+       <div class="alert alert-warning"> @JsonSerializer.Serialize(Employees)</div>
+    } *@
+    <hr/>
+
+    <EmloyeeList Employees="@Employees" EmployeeSelected="@GetSelectedEmployee"></EmloyeeList>
+
+</div>
+
+@code {
+    /* Logic for the Component */
+    /*Component: Autonomous Objet that contains a. UI, b. Data-Properties, c. Event-Methods */
+
+    /*Data Properties*/
+    public Employee? Employee { get; set; }
+    public List<Employee>? Employees { get; set; }
+    public List<Department>? Departents { get; set; }
+    public List<string>? Designations { get; set; }
+
+    /*Use the  OnInitialized()  OR OnInitializedAsync() Lifecycle method to execute code
+     * that is to be executed once the component instanc is ready*/
+    protected override void OnInitialized()
+    {
+        /* Insiantiate Data Properties to their instance or for initial values so that componet'
+         * UI will have default values
+        */
+        Employee = new Employee();
+        Employees = new List<Employee>()
+        {
+            new Employee(){EmpNo=10,EmpName="Ajay",Designation="Manager",DeptNo=10,Salary=123456}
+        };
+        Departents = new List<Department>()
+        {
+            new Department(){DeptNo=10,DeptName="IT" },
+            new Department(){DeptNo=20,DeptName="HR" },
+            new Department(){DeptNo=30,DeptName="TRG" },
+            new Department(){DeptNo=40,DeptName="SALES" }
+        };
+        Designations = new List<string>()
+        {
+            "Director","Manager","Staff"
+        };
+        base.OnInitialized();
+    }
+    void Clear()
+    {
+        Employee = new Employee();    
+    }
+    void Save()
+    {
+        Employees.Add(Employee);   
+    }
+    void GetSelectedEmployee(Employee emp)
+    {
+        Employee = emp;    
+    }
+}

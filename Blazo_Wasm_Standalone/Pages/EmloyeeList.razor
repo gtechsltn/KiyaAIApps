@@ -1,0 +1,63 @@
+﻿@using Blazo_Wasm_Standalone.Models
+<h3>Emloyee  List</h3>
+<div class="container">
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>
+                    EmpNo
+                </th>
+                <th>
+                    EmpName
+                </th>
+                <th>
+                    Designation
+                </th>
+                <th>
+                    DeptNo
+                </th>
+                <th>
+                    Salary
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var emp in Employees)
+            {
+                <tr @onclick="@(()=>OnEmployeeSelected(emp))">
+                    <td>@emp.EmpNo</td>
+                    <td>@emp.EmpName</td>
+                    <td>@emp.Designation</td>
+                    <td>@emp.DeptNo</td>
+                    <td>@emp.Salary</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+@code {
+    /*ParameterAttribute class is applied in Property in component that is used to
+     *  accept data from its Parent component*/
+    [Parameter]
+    public List<Employee> Employees { get; set; }
+    /*EventCallback<T>, a Evet Hander Delegate that is used to Invoke a method from the Subscriber
+     * and executed it on the Subscriber by passing 'T' as 'payload' aka EVentArgs to it
+    * 
+    */
+   [Parameter]
+    public EventCallback<Employee> EmployeeSelected { get; set; }
+
+    /*
+     * This method is invoked on onclick of table row, whihc wil pass
+     * Employee object to this method and this method will pass this
+     * Employee object as payload (evet parameter) to subscriber  
+     * 
+     */
+    async Task OnEmployeeSelected(Employee emp)
+    {
+        /*emp is payload passed to Subscriber*/
+        await EmployeeSelected.InvokeAsync(emp);
+    }
+}

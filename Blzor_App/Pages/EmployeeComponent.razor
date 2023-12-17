@@ -1,0 +1,111 @@
+﻿@page "/createemp"
+@using Blzor_App.Models
+
+
+<h3>Employee Component</h3>
+<div class="container">
+    <EditForm Model="@Employee">
+        <div class="form-group">
+            <label>Employee No:</label>
+            <InputNumber @bind-Value="Employee.EmpNo"   class="form-control"/>
+        </div>
+        <div class="form-group">
+            <label>Employee Name:</label>
+            <InputText @bind-Value="Employee.EmpName" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label>Department:</label>
+            <InputSelect @bind-Value="Employee.DeptNo">
+                <option>Select Department</option>
+                @foreach (var dept in Departments)
+                {
+                    <option value="@dept.DeptNo">@dept.DeptName</option>
+                }
+            </InputSelect> 
+        </div>
+
+        <div class="form-group">
+            <label>Designaton:</label>
+            <InputSelect @bind-Value="Employee.Designation">
+                <option>Select Designation</option>
+                @foreach (var desig in Designations)
+                {
+                    <option value="@desig">@desig</option>
+                }
+            </InputSelect>
+        </div>
+        <div class="form-group">
+            <label>Salary:</label>
+            <InputNumber @bind-Value="Employee.Salary" class="form-control" />
+        </div>
+        <div class="btn-group-lg">
+           <button class="btn btn-warning" @onclick="Clear">Clear</button>
+            <button class="btn btn-success" @onclick="Save">Save</button>
+        </div>
+        <InputNumber ValueExpression="@(()=>Number)" ValueChanged="@((int n )=>changed(n))" />
+        <div class="alert alert-success">@value</div>
+    </EditForm>
+
+
+
+
+    <hr/>
+    <EmployeesComponent Employees="@Employees" EmployeeSeleted="@GetSelectedEmployee"
+                        DeleteClicked="@DeleteEmployee"></EmployeesComponent>
+
+</div>
+
+
+@code {
+    // "IT", "IT-ES","HRD", "SALES", "Training", "TravelDesk", "Accounts"
+    public Department Department { get; set; } = new Department();
+    public Employee Employee { get; set; } = new Employee();
+    public Employee Emp { get; set; } = new Employee();
+    public int Number { get; set; } = 0;
+    public int value { get; set; } = 0;
+    List<Employee> Employees = new List<Employee>()
+    {
+       new Employee() {EmpNo=101,EmpName="Ajay",Designation="Manager",DeptNo=10,Salary=234567 }
+    };
+
+    public List<Department> Departments { get; set; } = new List<Department>()
+    {
+       new Department(){DeptNo=10,DeptName="IT",Location="Pune-Bavdhan",Capacity=15 },
+       new Department(){DeptNo=20,DeptName="IT-ES",Location="Pune-Bavdhan",Capacity=7 },
+       new Department(){DeptNo=30,DeptName="SALES",Location="Pune-CAMP",Capacity=34 },
+       new Department(){DeptNo=40,DeptName="HRD",Location="Pune-KOTHRUD",Capacity=12 },
+       new Department(){DeptNo=50,DeptName="ACCOUNTS",Location="Pune-KOTHRUD",Capacity=5 },
+       new Department(){DeptNo=60,DeptName="TRAINING",Location="Pune-CAMP",Capacity=40 }
+    };
+
+    public List<string> Designations { get; set; } = new List<string>()
+    {
+       "Manager", "Director","Staff"
+    };
+
+    void Save()
+    {
+        Employees.Add(Employee);
+    }
+
+    void Clear()
+    {
+        Employee = new Employee();
+    }
+
+    void GetSelectedEmployee(Employee emp)
+    {
+        Employee = emp;
+    }
+
+    void DeleteEmployee(Employee emp)
+    {
+        Employees.Remove(emp);
+    }
+
+    void changed(int v)
+    {
+        value = v;
+    }
+}
