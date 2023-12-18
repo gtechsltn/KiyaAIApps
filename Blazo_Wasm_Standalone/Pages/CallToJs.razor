@@ -1,0 +1,21 @@
+﻿@page "/calltojs"
+@inject IJSRuntime js
+<h3>Call To Js</h3>
+<button @onclick="StringConcat">Invoke JS Function: concat()</button>
+<hr/>
+<div>
+    <strong>
+        The Result Received from JS Method: @JSResult
+    </strong>
+</div>
+
+@code {
+    public string JSResult { get; set; } = string.Empty;
+    async Task StringConcat()
+    {
+        // P1: Name of the Method from JS file, 
+        // P2: Object Array that represents the Parameters to JS Method
+        // INternly they are serialized as JSON with K:V pair
+        JSResult = await js.InvokeAsync<string>("concat", "James", "Bond");
+    }
+}

@@ -1,0 +1,16 @@
+﻿@page "/extdata"
+<h3>External Data Component</h3>
+<div>
+     @ExternalData
+</div>
+
+@code {
+    HttpClient client = new HttpClient();
+
+    public string? ExternalData { get; set; } = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ExternalData = await client.GetStringAsync("https://catprdapi.azurewebsites.net/api/Product");
+    }
+}

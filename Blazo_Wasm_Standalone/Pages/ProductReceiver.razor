@@ -1,0 +1,70 @@
+﻿@* @page "/prdreceiver/{id:int?}" *@
+@page "/prdreceiver"
+@using Blazo_Wasm_Standalone.Models
+@inject GlobalAppState state;
+<h3>Product Receiver Component</h3>
+
+<div class="container">
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>Product Id</th>
+                <th>Product Name</th>
+                <th>Category Id</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var prd in FilteredProducts)
+            {
+                <tr>
+                    <td>@prd.ProductId</td>
+                    <td>@prd.ProductName</td>
+                    <td>@prd.CategoryId</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    public Product Product { get; set; }
+    public Products Products { get; set; }
+    public List<Product> FilteredProducts { get; set; }  
+    /*The declaration oto support the Navigation*/
+    // [Parameter]
+    // public int id { get; set; } = 0;
+
+
+    protected override void OnInitialized()
+    {
+        Product = new Product();
+        Products = new Products();
+        FilteredProducts = new List<Product>();
+
+        // if (id == 0)
+        // {
+        //     FilteredProducts = Products;
+        // }
+        // else
+        // {
+        //     FilteredProducts = (from p in Products
+        //                         where p.CategoryId == id
+        //                         select p).ToList();
+        // }
+
+        if (state.State == 0)
+        {
+            FilteredProducts = Products;
+        }
+        else
+        {
+            FilteredProducts = (from p in Products
+                                where p.CategoryId == state.State
+                                select p).ToList();
+        }
+
+
+        base.OnInitialized();
+    }
+}

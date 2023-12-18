@@ -1,0 +1,74 @@
+﻿@page "/productreceiver"
+@using Blzor_Appq.Models
+
+ 
+<!--Inject the State-->
+
+@inject ApplicationStateContainerService state;
+
+
+<h3>Product Receiver</h3>
+
+
+
+<table class="table table-border3ed table-striped table-dark">
+    <thead>
+        <tr>
+            <th>
+                Product Id
+            </th>
+            <th>
+                Product Name
+            </th>
+
+              <th>
+                Category Id
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+       @foreach (var prd in FilteredProducts)
+       {
+         <tr>
+             <td>
+                 @prd.ProductId
+             </td>
+             <td>
+                 @prd.ProductName
+             </td>
+              <td>
+                 @prd.CategoryId
+             </td>
+         </tr>    
+       }
+    </tbody>
+
+</table>
+
+@code {
+    private Product product;
+    private Products products;
+    private List<Product> FilteredProducts;
+    int CatId = 0;
+
+    protected override void OnInitialized()
+    {
+        product = new Product();
+        products = new Products();
+        FilteredProducts = new List<Product>();
+
+
+        // Subscribe to the State Value from the Application State Object
+        CatId = state.StateValue;
+
+        if (CatId == 0)
+        {
+            FilteredProducts = products;   
+        }
+        else
+        {
+            FilteredProducts = products.Where(p=>p.CategoryId == CatId).ToList();
+        }
+    }
+
+}

@@ -1,0 +1,37 @@
+﻿@page "/counter"
+@using System.Data.SqlClient
+@using System.Text.Json
+<PageTitle>Counter</PageTitle>
+
+<h1>Counter</h1>
+
+<p role="status">Current count: @currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+<div>
+    @JsonSerializer.Serialize(Dnames)
+</div>
+
+@code {
+    private int currentCount = 0;
+
+    public List<string> Dnames { get; set; } = new List<string>();
+
+    private void IncrementCount()
+    {
+        SqlConnection conn = new SqlConnection("Data Source=.;Initial Catalog=UCompany;Integrated Security=SSPI");
+        conn.Open();
+        SqlCommand cmd = conn.CreateCommand();
+        cmd.CommandText = "Select * from Department";
+
+        var Reader = cmd.ExecuteReader();
+        while (Reader.Read())
+        {
+            Dnames.Add(Reader["DeptName"].ToString());
+        }
+        Reader.Close();
+
+        currentCount++;
+    }
+}

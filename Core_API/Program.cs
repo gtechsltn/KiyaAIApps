@@ -10,6 +10,18 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<UCompanyContext>();
 // Register the Data Services
 builder.Services.AddScoped<IDataService<Department,int>, DepartmentDataService>();
+
+/*Register the CORS Service*/
+
+builder.Services.AddCors(options => 
+{
+    options.AddPolicy("cors", policy =>
+    {
+        policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+    });
+});
+
+
 // Options will be loaded along with DI
 builder.Services.AddControllers()
     /* Supress the Default Camel-asing for JSON Response */
@@ -30,6 +42,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+/* Configure CORS Middleware*/
+app.UseCors("cors");
 
 app.UseAuthorization();
 // Expose the API on Public Endpoint and wait for the HTTP REquest

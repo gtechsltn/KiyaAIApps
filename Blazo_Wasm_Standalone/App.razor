@@ -1,4 +1,9 @@
-﻿@{
+﻿@using System.Reflection
+@* @This is Responsible REading all the COmponent Types Executing in the Current Application@  *@
+@using Microsoft.AspNetCore.Components.WebAssembly.Services
+@*Injection for LAzy Loder*@
+@inject LazyAssemblyLoader assemblyLoader;
+@{
   /*
    
      Route Table: FOr COmponents
@@ -8,7 +13,9 @@
     */
 }
 
-<Router AppAssembly="@typeof(App).Assembly">
+<Router AppAssembly="@typeof(App).Assembly"
+        OnNavigateAsync="OnNavigationAsync"
+        AdditionalAssemblies="lazyAssemblies">
     <Found Context="routeData">
         <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
         <FocusOnNavigate RouteData="@routeData" Selector="h1" />
@@ -20,3 +27,33 @@
         </LayoutView>
     </NotFound>
 </Router>
+
+
+@code {
+    // Code to make the LazyAssemblyLoader class perform its job
+    // THis will collect all assemblies loaded current in WASM Application from the Browser
+    private List<Assembly> lazyAssemblies = new List<Assembly>();
+
+   
+    /// <summary>
+    /// NavigationContext: The class used to represent the Current Route Navigation
+    /// This represents the Route URL, Parameters, Component Class to route to
+    /// </summary>
+    /// <param name="context"></param>
+    /// <returns></returns>
+    private async Task OnNavigationAsync(NavigationContext context)
+    {
+        // Define a logic for Navigation by verifing the 'path' property
+        // of the Navigation Context using the Router Component
+
+        if (context.Path == "extdata")
+        {
+            // based on the path, add the Assembly into the lazyAssemblies collection
+            var assemblies = await assemblyLoader.LoadAssembliesAsync(new[] { "LazyLib.dll" });
+            // the lazy loaded assembly is now added into the assembly collection which is bound with Router
+            // Compoponent
+            lazyAssemblies.AddRange(assemblies);
+        }
+
+    }
+}

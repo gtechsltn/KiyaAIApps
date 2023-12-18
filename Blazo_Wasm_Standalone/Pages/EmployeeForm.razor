@@ -13,7 +13,9 @@
 
     generate the FormModel for POST make sure that the odel objet is instantiated -->
 
-    <EditForm Model="@Employee">
+    <EditForm Model="@Employee" OnValidSubmit="Save">
+        <DataAnnotationsValidator/>
+        <ValidationSummary/>
         <div class="form-group">
             <label>Emp No:</label>
             <InputNumber @bind-Value="Employee.EmpNo" class="form-control"/>
@@ -48,12 +50,22 @@
         </div>
         <div class="btn-group-lg">
             <button class="btn btn-warning" @onclick="Clear">Clear</button>
-            <button class="btn btn-success" @onclick="Save">Save</button>
+           @*  <button class="btn btn-success" @onclick="Save">Save</button> *@
+            <input type="submit" class="btn btn-success" />
         </div>
+        <div class="form-group">
+            <label>ENter Number:</label>
+            <InputNumber ValueExpression=@(()=>Number) ValueChanged=@((int v)=>Change(v)) class="form-control"/>
+           <br/>
+           <div>
+               @Value
+           </div>
+         </div>
     </EditForm>
    @*  @{
        <div class="alert alert-warning"> @JsonSerializer.Serialize(Employees)</div>
     } *@
+    
     <hr/>
 
     <EmloyeeList Employees="@Employees" EmployeeSelected="@GetSelectedEmployee"></EmloyeeList>
@@ -69,6 +81,9 @@
     public List<Employee>? Employees { get; set; }
     public List<Department>? Departents { get; set; }
     public List<string>? Designations { get; set; }
+
+    public int Number { get; set; } = 0;
+    public int Value { get; set; } = 0;
 
     /*Use the  OnInitialized()  OR OnInitializedAsync() Lifecycle method to execute code
      * that is to be executed once the component instanc is ready*/
@@ -107,4 +122,10 @@
     {
         Employee = emp;    
     }
+
+    void Change(int v)
+    {
+        Value = v; 
+    }
+
 }

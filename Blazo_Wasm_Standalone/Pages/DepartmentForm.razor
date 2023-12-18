@@ -1,0 +1,36 @@
+﻿@page "/deptform"
+@using Blazo_Wasm_Standalone.Models
+@using System.Text.Json
+
+@inject HttpClient http
+
+<h3>Department Form</h3>
+
+<div class="container">
+    <strong>
+        @JsonSerializer.Serialize(departments)
+    </strong>
+    <button @onclick="Save">Save</button>
+</div>
+
+
+
+@code {
+    private List<Department>? departments { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await http.GetFromJsonAsync<ResponseObject<Department>>("https://localhost:7139/api/Department/get");
+        departments = response.Records.ToList();
+        //return base.OnInitializedAsync();
+    }
+
+    async void Save()
+    {
+        var dept = new Department()
+        {
+           DeptNo = 801,DeptName="Dept_801",Location="Pune",Capacity=2949   
+        };
+        var response = await http.PostAsJsonAsync("https://localhost:7139/api/Department/createnew",dept);
+    }
+}

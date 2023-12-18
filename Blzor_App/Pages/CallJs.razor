@@ -1,0 +1,49 @@
+﻿@page "/calljscomponent"
+
+<!--Inject theIJSRuntime -->
+
+@inject IJSRuntime js;
+
+<h3>Calling JavaScript in Blazor Component</h3>
+
+<div class="container">
+    <button class="btn btn-primary" @onclick="DisplayAlert">Calling the DisplayAlert() method</button>
+    <br/>
+    <button class="btn btn-primary" @onclick="Concatinate">Calling the Concatinate() method</button>
+    <br/>
+    <div class="container">
+        <strong>Result of Concatination is = @Result</strong>
+    </div>
+    <br/>
+    <button class="btn btn-primary" @onclick="GetProducts">Calling the GetProduct() method</button>
+    <br/>
+    <div class="container">
+        <strong>Result of Products Response is = @data</strong>
+    </div>
+    
+</div>
+
+
+@code {
+    string Result = String.Empty;
+    string data = String.Empty;
+    
+    /// <summary>
+    ///  Wrapper for displayAletr()
+    /// </summary>
+    /// <returns></returns>
+    private async Task DisplayAlert()
+    {
+        await js.InvokeVoidAsync("displayAlert");
+    }
+
+    private async Task Concatinate()
+    {
+        Result = await js.InvokeAsync<string>("concatinate", "James", "Bond");
+    }
+
+    private async Task GetProducts()
+    {
+        data = await js.InvokeAsync<string>("getProducts");
+    }
+}

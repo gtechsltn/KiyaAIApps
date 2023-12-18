@@ -11,4 +11,10 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.24" PrivateAssets="all" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\LazyLib\LazyLib.csproj" />
+  </ItemGroup>
+	<ItemGroup>
+		<BlazorWebAssemblyLazyLoad Include="LazyLib.dll" />
+	</ItemGroup>
 </Project>

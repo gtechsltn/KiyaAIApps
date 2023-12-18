@@ -1,0 +1,59 @@
+﻿@page "/categorysender"
+@using Blzor_Appq.Models
+ 
+<!--Inject the State-->
+
+@inject ApplicationStateContainerService state;
+@inject NavigationManager navigate;
+
+<h3>Categgory Sender</h3>
+
+<table class="table table-border3ed table-striped table-dark">
+    <thead>
+        <tr>
+            <th>
+                Category Id
+            </th>
+            <th>
+                Category Name
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+       @foreach (var cat in categories)
+       {
+         <tr @onclick="@(()=>SelectCategory(cat.CategoryId))">
+             <td>
+                 @cat.CategoryId
+             </td>
+             <td>
+                 @cat.CategoryName
+             </td>
+         </tr>    
+       }
+    </tbody>
+
+</table>
+
+@code {
+    private Category category;
+    private Categories categories;
+
+    protected override void OnInitialized()
+    {
+        category = new Category();
+        categories = new Categories();
+
+        // Subscribe to the OnStateChanged event and  link that event to 'StateHasChanged' 
+        // Lifecycle method of the component
+        state.OnStateChanged += StateHasChanged;
+    }
+
+    void SelectCategory(int catid)
+    {
+        // the selected CategoryId is passed to the application state
+        state.SetStateValue(catid);
+        navigate.NavigateTo("/productreceiver");
+    }
+
+}
